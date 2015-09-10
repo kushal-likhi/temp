@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="node-gephi-lgl" default="all">
+  
+  
+  <property file="node-gephi-lgl.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/*.rbc/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.bundle/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/.tox/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.war"/>
+    <include name="*.ear"/>
+    <include name="*.apk"/>
+    <include name="*.zip"/>
+    <include name="*.swc"/>
+    <include name="*.ane"/>
+    <include name="*.egg"/>
+    <include name="*.jar"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+    <exclude name="**/?*.aj"/>
+  </patternset>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.gephi-toolkit.classpath">
+    <pathelement location="${basedir}/lib/gephi-toolkit.jar"/>
+  </path>
+  
+  
+  <!-- Global Libraries -->
+  
+  <path id="library.groovy-2.4.4.classpath">
+    <pathelement location="/opt/groovy-2.4.4/lib/ant-1.9.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/ant-antlr-1.9.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/ant-junit-1.9.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/ant-launcher-1.9.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/bsf-2.4.0.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/commons-cli-1.2.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/commons-logging-1.2.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/gpars-1.2.1.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/groovy-2.4.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/groovy-ant-2.4.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/groovy-bsf-2.4.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/groovy-console-2.4.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/groovy-docgenerator-2.4.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/groovy-groovydoc-2.4.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/groovy-groovysh-2.4.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/groovy-jmx-2.4.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/groovy-json-2.4.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/groovy-jsr223-2.4.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/groovy-nio-2.4.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/groovy-servlet-2.4.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/groovy-sql-2.4.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/groovy-swing-2.4.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/groovy-templates-2.4.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/groovy-test-2.4.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/groovy-testng-2.4.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/groovy-xml-2.4.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/hamcrest-core-1.3.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/ivy-2.4.0.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/jansi-1.11.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/jcommander-1.47.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/jline-2.12.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/jsp-api-2.0.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/jsr166y-1.7.0.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/junit-4.12.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/multiverse-core-0.7.0.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/openbeans-1.0.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/qdox-1.12.1.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/servlet-api-2.4.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/testng-6.8.13.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/xmlpull-1.1.3.1.jar"/>
+    <pathelement location="/opt/groovy-2.4.4/lib/xstream-1.4.7.jar"/>
+  </path>
+  <!-- Register Custom Compiler Taskdefs -->
+  <target name="register.custom.compilers">
+    <property name="grooovyc.task.sdk" value="library.groovy-2.4.4.classpath"/>
+    <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc" classpathref="${grooovyc.task.sdk}"/>
+  </target>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module node-gephi-lgl -->
+  
+  <dirname property="module.node-gephi-lgl.basedir" file="${ant.file}"/>
+  
+  
+  
+  <property name="compiler.args.node-gephi-lgl" value="-encoding UTF-8 -source 1.6 ${compiler.args}"/>
+  
+  <property name="node-gephi-lgl.output.dir" value="${module.node-gephi-lgl.basedir}/out/production/node-gephi-lgl"/>
+  <property name="node-gephi-lgl.testoutput.dir" value="${module.node-gephi-lgl.basedir}/out/test/node-gephi-lgl"/>
+  
+  <path id="node-gephi-lgl.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="node-gephi-lgl.module.production.classpath">
+    <path refid="library.groovy-2.4.4.classpath"/>
+    <path refid="library.gephi-toolkit.classpath"/>
+  </path>
+  
+  <path id="node-gephi-lgl.runtime.production.module.classpath">
+    <pathelement location="${node-gephi-lgl.output.dir}"/>
+    <path refid="library.groovy-2.4.4.classpath"/>
+    <path refid="library.gephi-toolkit.classpath"/>
+  </path>
+  
+  <path id="node-gephi-lgl.module.classpath">
+    <pathelement location="${node-gephi-lgl.output.dir}"/>
+    <path refid="library.groovy-2.4.4.classpath"/>
+    <path refid="library.gephi-toolkit.classpath"/>
+  </path>
+  
+  <path id="node-gephi-lgl.runtime.module.classpath">
+    <pathelement location="${node-gephi-lgl.testoutput.dir}"/>
+    <pathelement location="${node-gephi-lgl.output.dir}"/>
+    <path refid="library.groovy-2.4.4.classpath"/>
+    <path refid="library.gephi-toolkit.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.node-gephi-lgl">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.node-gephi-lgl">
+    <patternset refid="excluded.from.module.node-gephi-lgl"/>
+  </patternset>
+  
+  <path id="node-gephi-lgl.module.sourcepath">
+    <dirset dir="${module.node-gephi-lgl.basedir}">
+      <include name="src/groovy"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.node-gephi-lgl" depends="compile.module.node-gephi-lgl.production,compile.module.node-gephi-lgl.tests" description="Compile module node-gephi-lgl"/>
+  
+  <target name="compile.module.node-gephi-lgl.production" depends="register.custom.compilers" description="Compile module node-gephi-lgl; production classes">
+    <mkdir dir="${node-gephi-lgl.output.dir}"/>
+    <groovyc destdir="${node-gephi-lgl.output.dir}" fork="yes">
+      <src refid="node-gephi-lgl.module.sourcepath"/>
+      <classpath refid="node-gephi-lgl.module.production.classpath"/>
+      <patternset refid="excluded.from.compilation.node-gephi-lgl"/>
+      <javac debug="${compiler.debug}">
+        <compilerarg line="${compiler.args.node-gephi-lgl}"/>
+      </javac>
+    </groovyc>
+    
+    <copy todir="${node-gephi-lgl.output.dir}">
+      <fileset dir="${module.node-gephi-lgl.basedir}/src/groovy">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.node-gephi-lgl.tests" depends="register.custom.compilers,compile.module.node-gephi-lgl.production" description="compile module node-gephi-lgl; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.node-gephi-lgl" description="cleanup module">
+    <delete dir="${node-gephi-lgl.output.dir}"/>
+    <delete dir="${node-gephi-lgl.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.node-gephi-lgl" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.node-gephi-lgl" description="build all modules"/>
+  
+  <target name="init.artifacts">
+    <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
+    <property name="artifact.output.node-gephi-lgl:jar" value="${basedir}/out/artifacts/node_gephi_lgl_jar"/>
+    <mkdir dir="${artifacts.temp.dir}"/>
+    <property name="temp.jar.path.node-gephi-lgl.jar" value="${artifacts.temp.dir}/node-gephi-lgl.jar"/>
+  </target>
+  
+  <target name="artifact.node-gephi-lgl:jar" depends="init.artifacts, compile.module.node-gephi-lgl" description="Build &#39;node-gephi-lgl:jar&#39; artifact">
+    <property name="artifact.temp.output.node-gephi-lgl:jar" value="${artifacts.temp.dir}/node_gephi_lgl_jar"/>
+    <mkdir dir="${artifact.temp.output.node-gephi-lgl:jar}"/>
+    <jar destfile="${temp.jar.path.node-gephi-lgl.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <zipfileset dir="${node-gephi-lgl.output.dir}"/>
+      <zipfileset src="${basedir}/lib/gephi-toolkit.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/ant-1.9.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/ant-antlr-1.9.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/ant-junit-1.9.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/ant-launcher-1.9.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/bsf-2.4.0.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/commons-cli-1.2.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/commons-logging-1.2.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/gpars-1.2.1.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/groovy-2.4.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/groovy-ant-2.4.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/groovy-bsf-2.4.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/groovy-console-2.4.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/groovy-docgenerator-2.4.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/groovy-groovydoc-2.4.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/groovy-groovysh-2.4.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/groovy-jmx-2.4.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/groovy-json-2.4.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/groovy-jsr223-2.4.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/groovy-nio-2.4.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/groovy-servlet-2.4.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/groovy-sql-2.4.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/groovy-swing-2.4.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/groovy-templates-2.4.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/groovy-test-2.4.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/groovy-testng-2.4.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/groovy-xml-2.4.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/hamcrest-core-1.3.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/ivy-2.4.0.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/jansi-1.11.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/jcommander-1.47.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/jline-2.12.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/jsp-api-2.0.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/jsr166y-1.7.0.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/junit-4.12.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/multiverse-core-0.7.0.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/openbeans-1.0.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/qdox-1.12.1.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/servlet-api-2.4.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/testng-6.8.13.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/xmlpull-1.1.3.1.jar"/>
+      <zipfileset src="${basedir}/../../../../opt/groovy-2.4.4/lib/xstream-1.4.7.jar"/>
+    </jar>
+    <copy file="${temp.jar.path.node-gephi-lgl.jar}" tofile="${artifact.temp.output.node-gephi-lgl:jar}/node-gephi-lgl.jar"/>
+  </target>
+  
+  <target name="build.all.artifacts" depends="artifact.node-gephi-lgl:jar" description="Build all artifacts">
+    <mkdir dir="${artifact.output.node-gephi-lgl:jar}"/>
+    <copy todir="${artifact.output.node-gephi-lgl:jar}">
+      <fileset dir="${artifact.temp.output.node-gephi-lgl:jar}"/>
+    </copy>
+    
+    <!-- Delete temporary files -->
+    <delete dir="${artifacts.temp.dir}"/>
+  </target>
+  
+  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
+</project>
