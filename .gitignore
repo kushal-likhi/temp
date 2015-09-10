@@ -6,3 +6,6 @@
 #out files
 out/production
 
+#work files
+workspace/*.json
+workspace/*.el
