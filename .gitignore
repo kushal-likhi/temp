@@ -1,0 +1,8 @@
+#IDE FILES
+.idea
+*.ipr
+
+
+#out files
+out/production
+
