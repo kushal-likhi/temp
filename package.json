@@ -1,0 +1,18 @@
+{
+  "name": "node-gephi-lgl",
+  "version": "1.0.0",
+  "description": "Node Js module to use this gephi layout for force directed graphs",
+  "main": "src/js/gephiLayout.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "gephi",
+    "lgl"
+  ],
+  "author": "Kushal Likhi",
+  "license": "ISC",
+  "dependencies": {
+    "request": "^2.61.0"
+  }
+}
