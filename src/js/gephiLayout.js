@@ -93,9 +93,9 @@ function LayoutCalculator(dataJson) {
 
     if (!dataJson.links) return callback(new Error('Links not defined!'));
 
-    this.tempInFile = path.join(__dirname, '../../workspace', +new Date() + '_' + (Math.random() * 100000) + '.el');
+    this.tempInFile = path.join(__dirname, '../../workspace', +new Date() + '_' + (Math.random() * 100000) + '.net');
 
-    this.tempOutFile = path.join(__dirname, '../../workspace', +new Date() + '_' + (Math.random() * 100000) + '.json');
+    this.tempOutFile = path.join(__dirname, '../../workspace', +new Date() + '_' + (Math.random() * 100000) + '.svg');
 
     this.data = dataJson;
 
@@ -133,8 +133,10 @@ LayoutCalculator.prototype.calculateLayout = function (callback) {
 LayoutCalculator.prototype._prepareInFile = function (callback) {
     try {
         var fd = fs.openSync(this.tempInFile, 'w');
+        fs.writeSync(fd, '*Vertices ' + this.data.nodes.length + '\n');
+        fs.writeSync(fd, '*Edges\n');
         this.data.links.forEach(function (link) {
-            fs.writeSync(fd, link.source + " " + link.target + "\n");
+            fs.writeSync(fd, (parseInt(link.source, 10) + 1) + " " + (parseInt(link.target, 10) + 1) + "\n");
         });
         fs.closeSync(fd);
         callback();
@@ -188,8 +190,36 @@ exports.LayoutCalculator = LayoutCalculator;
 //Do a self test
 exports.selfTest = function (callback) {
     var calculator = new LayoutCalculator({
-        nodes: [{id: 1}, {id: 2}, {id: 3}, {id: 4}],
-        links: [{source: 1, target: 2}, {source: 1, target: 3}, {source: 1, target: 2}, {source: 3, target: 0}]
+        nodes: [
+            {id: 0},
+            {id: 1},
+            {id: 2},
+            {id: 3},
+            {id: 4},
+            {id: 5},
+            {id: 6},
+            {id: 7},
+            {id: 8},
+            {id: 9},
+            {id: 10}
+        ],
+        links: [
+            {source: 5, target: 10},
+            {source: 5, target: 3},
+            {source: 3, target: 1},
+            {source: 3, target: 4},
+            {source: 3, target: 2},
+            {source: 10, target: 2},
+            {source: 2, target: 4},
+            {source: 1, target: 4},
+            {source: 4, target: 6},
+            {source: 6, target: 9},
+            {source: 6, target: 7},
+            {source: 6, target: 8},
+            {source: 6, target: 0},
+            {source: 7, target: 0},
+            {source: 8, target: 0}
+        ]
     });
     calculator.calculateLayout(function (err, data) {
         if (err) return callback(err, false);
