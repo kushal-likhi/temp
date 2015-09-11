@@ -78,29 +78,40 @@ exports.init = function (callback) {
  * @class
  * Layout Calculator
  * */
-function LayoutCalculator(dataJson) {
-    if (!dataJson) return callback(new Error('Data JSON not defined!'));
+function LayoutCalculator(dataJson, settings) {
+    if (!dataJson) throw new Error('Data JSON not defined!');
 
     try {
         if (typeof dataJson == 'string' || dataJson instanceof String) {
             dataJson = JSON.parse(dataJson);
         }
     } catch (c) {
-        return callback(new Error('Invalid data json provided!'));
+        throw (new Error('Invalid data json provided!'));
     }
 
-    if (!dataJson.nodes) return callback(new Error('Nodes not defined!'));
+    if (!dataJson.nodes) throw (new Error('Nodes not defined!'));
 
-    if (!dataJson.links) return callback(new Error('Links not defined!'));
+    if (!dataJson.links) throw (new Error('Links not defined!'));
 
     this.tempInFile = path.join(__dirname, '../../workspace', +new Date() + '_' + (Math.random() * 100000) + '.net');
 
-    this.tempOutFile = path.join(__dirname, '../../workspace', +new Date() + '_' + (Math.random() * 100000) + '.svg');
+    this.tempOutFile = path.join(__dirname, '../../workspace', +new Date() + '_' + (Math.random() * 100000) + '.json');
 
     this.data = dataJson;
 
     console.log('Work files:', this.tempInFile, this.tempOutFile);
 
+    settings = settings || {};
+    settings.allowAutoMode = !!settings.allowAutoMode;
+    settings.stepDisplacement = settings.stepDisplacement || 1;
+    settings.optimalDistance = settings.optimalDistance || 200;
+    settings.iterations = settings.iterations || 100;
+    settings.saveSvg = !!settings.saveSvg;
+
+    this.settings = settings;
+
+    this.settings.source = this.tempInFile;
+    this.settings.target = this.tempOutFile;
 }
 
 /**
@@ -152,10 +163,7 @@ LayoutCalculator.prototype._prepareInFile = function (callback) {
  * */
 LayoutCalculator.prototype._runCommand = function (callback) {
     request.post('http://localhost:' + PORT + '/calculate', {
-        json: {
-            source: this.tempInFile,
-            target: this.tempOutFile
-        }
+        json: this.settings
     }, function (e, r, b) {
         if (e) callback(e);
         else if (r.statusCode == 200) callback(null, b);
