@@ -157,7 +157,7 @@ LayoutCalculator.prototype._runCommand = function (callback) {
     }, function (e, r, b) {
         if (e) callback(e);
         else if (r.statusCode == 200) callback(null, b);
-        else callback(new Error(r));
+        else callback(new Error(b));
     });
 };
 
