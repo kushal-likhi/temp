@@ -1,7 +1,9 @@
 package org.socilab.lgl
 
+import org.socilab.lgl.gephi.GephiLayoutCalculator
 import org.socilab.lgl.interfaces.EngineCommandInput
 import org.socilab.lgl.interfaces.InputCommand
+import org.socilab.lgl.interfaces.LayoutCalculator
 import org.socilab.lgl.server.HTTPServer
 
 public class Main {
@@ -19,7 +21,8 @@ public class Main {
             boolean calculate(String inputFileName, String outputFileName) {
                 println inputFileName
                 println outputFileName
-                return true
+                LayoutCalculator layoutCalculator = new GephiLayoutCalculator(inputFileName, outputFileName)
+                return layoutCalculator.calculate()
             }
         })
         engineCommandInput.listen()

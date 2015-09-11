@@ -7,7 +7,6 @@ import com.sun.net.httpserver.HttpServer
 import groovy.json.JsonSlurper
 import org.socilab.lgl.interfaces.EngineCommandInput
 import org.socilab.lgl.interfaces.InputCommand
-
 import java.util.concurrent.Executors
 
 
@@ -21,23 +20,24 @@ class HTTPServer implements EngineCommandInput {
 
     public HTTPServer(Integer port) {
         this.port = port;
-        isa = new InetSocketAddress(9999)
+        isa = new InetSocketAddress(this.port)
         server = HttpServer.create(isa, 0)
         bindEndpoints();
     }
 
+    @Override
     public void terminate() {
         server.stop(0)
     }
 
     @Override
     void addListener(InputCommand inputCommand) {
-        inputCommandListener = inputCommand;
+        inputCommandListener = inputCommand
     }
 
     @Override
     boolean listen() {
-        println("starting with port " + port)
+        println("starting with port " + isa.port + ' with ' + isa.address)
         try {
             server.start()
             return true
@@ -56,17 +56,17 @@ class HTTPServer implements EngineCommandInput {
                     Map data = new JsonSlurper().parseText(payload) as Map
                     String message;
                     if (data.containsKey("source") && data.containsKey("target")) {
-                        Boolean resp = inputCommandListener.calculate(data.source as String, data.target as String);
+                        Boolean resp = inputCommandListener.calculate(data.source as String, data.target as String)
                         message = resp ? 'OK' : 'ERR'
                     } else {
                         message = 'Invalid JSON body'
                     }
-                    Headers responseHeaders = httpExchange.getResponseHeaders();
-                    responseHeaders.set("Content-Type", "text/plain");
-                    httpExchange.sendResponseHeaders(200, 0);
-                    OutputStream responseBody = httpExchange.getResponseBody();
-                    responseBody.write(message.bytes);
-                    responseBody.close();
+                    Headers responseHeaders = httpExchange.getResponseHeaders()
+                    responseHeaders.set("Content-Type", "text/plain")
+                    httpExchange.sendResponseHeaders(200, 0)
+                    OutputStream responseBody = httpExchange.getResponseBody()
+                    responseBody.write(message.bytes)
+                    responseBody.close()
                 }
             }
         }
