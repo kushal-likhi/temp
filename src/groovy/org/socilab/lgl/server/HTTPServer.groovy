@@ -57,7 +57,17 @@ class HTTPServer implements EngineCommandInput {
                     String payload = is.getText()
                     Map data = new JsonSlurper().parseText(payload) as Map
                     if (data.containsKey("source") && data.containsKey("target")) {
-                        Boolean resp = inputCommandListener.calculate(data.source as String, data.target as String)
+                        Boolean resp = inputCommandListener.calculate(
+                                data.source as String,
+                                data.target as String,
+                                [
+                                        allowAutoMode   : data.allowAutoMode as Boolean,
+                                        stepDisplacement: data.stepDisplacement as Float,
+                                        optimalDistance : data.optimalDistance as Float,
+                                        iterations      : data.iterations as Integer,
+                                        saveSvg         : data.saveSvg as Boolean
+                                ]
+                        )
                         message = resp ? 'OK' : 'Error in Calculation'
                         status = resp ? 200 : 203
                     } else {

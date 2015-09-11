@@ -5,6 +5,6 @@ interface InputCommand {
 
     public boolean isReady();
 
-    public boolean calculate(String inputFileName, String outputFileName);
+    public boolean calculate(String inputFileName, String outputFileName, Map settings);
 
 }

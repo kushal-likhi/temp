@@ -1,5 +1,6 @@
 package org.socilab.lgl.gephi
 
+import groovy.json.JsonOutput
 import org.gephi.data.attributes.api.AttributeController
 import org.gephi.data.attributes.api.AttributeModel
 import org.gephi.graph.api.GraphController
@@ -16,8 +17,7 @@ import org.gephi.project.api.ProjectController
 import org.gephi.project.api.Workspace
 import org.openide.util.Lookup
 import org.socilab.lgl.interfaces.LayoutCalculator
-
-import static org.gephi.io.exporter.api.ExportController.*
+import org.gephi.graph.api.Node
 
 
 class GephiLayoutCalculator implements LayoutCalculator {
@@ -30,10 +30,28 @@ class GephiLayoutCalculator implements LayoutCalculator {
     private AttributeModel attributeModel
     private Container container
     private UndirectedGraph graph
+    Boolean allowAutoMode
+    Float stepDisplacement
+    Float optimalDistance
+    Integer iterations
+    Boolean saveSvg
 
-    public GephiLayoutCalculator(String infile, String outFile) {
+    public GephiLayoutCalculator(
+            String infile,
+            String outFile,
+            Boolean allowAutoMode,
+            Float stepDisplacement,
+            Float optimalDistance,
+            Integer iterations,
+            Boolean saveSvg
+    ) {
         this.inFile = infile
         this.outFile = outFile
+        this.allowAutoMode = allowAutoMode
+        this.stepDisplacement = stepDisplacement
+        this.optimalDistance = optimalDistance
+        this.iterations = iterations
+        this.saveSvg = saveSvg
         initializeGephiProject()
     }
 
@@ -65,7 +83,7 @@ class GephiLayoutCalculator implements LayoutCalculator {
     private importGraph() {
         File inputFile = new File(inFile)
         container = importController.importFile(inputFile);
-        container.setAllowAutoNode(false); //Don't create missing nodes
+        container.setAllowAutoNode(allowAutoMode); //Don't create missing nodes
         container.getLoader().setEdgeDefault(EdgeDefault.UNDIRECTED);   //Force UNDIRECTED
         //Append imported data to GraphAPI
         importController.process(container, new DefaultProcessor(), workspace);
@@ -76,26 +94,37 @@ class GephiLayoutCalculator implements LayoutCalculator {
     }
 
     private void runLayoutAlgorithm() {
-        YifanHuLayout layout = new YifanHuLayout(null, new StepDisplacement(1f));
-        layout.setGraphModel(graphModel);
-        layout.resetPropertiesValues();
-        layout.setOptimalDistance(200f);
-        layout.initAlgo();
-
-        for (int i = 0; i < 100 && layout.canAlgo(); i++) {
-            layout.goAlgo();
+        YifanHuLayout layout = new YifanHuLayout(null, new StepDisplacement(stepDisplacement))
+        layout.setGraphModel(graphModel)
+        layout.resetPropertiesValues()
+        layout.setOptimalDistance(optimalDistance)
+        layout.initAlgo()
+        for (int i = 0; i < iterations && layout.canAlgo(); i++) {
+            layout.goAlgo()
         }
-        layout.endAlgo();
+        layout.endAlgo()
     }
 
-    private void exportToOutFile(){
-        ExportController ec = Lookup.getDefault().lookup(ExportController.class);
-        try {
-            ec.exportFile(new File(outFile));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return;
+    private void exportToOutFile() {
+        if (saveSvg) {
+            ExportController ec = Lookup.getDefault().lookup(ExportController.class);
+            try {
+                ec.exportFile(new File(outFile + '.svg'));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                return;
+            }
         }
-        throw new Exception('Not Supported')
+        List positions = []
+        for (Node node : graph.getNodes()) {
+            positions.push([
+                    ref: node.getId(),
+                    x  : node.getNodeData().x(),
+                    y  : node.getNodeData().y()
+            ])
+        }
+        File file = new File(outFile)
+        if (!file.exists()) file.createNewFile()
+        file.write(JsonOutput.toJson(positions))
     }
 }

@@ -18,10 +18,19 @@ public class Main {
             }
 
             @Override
-            boolean calculate(String inputFileName, String outputFileName) {
+            boolean calculate(String inputFileName, String outputFileName, Map settings) {
                 println inputFileName
                 println outputFileName
-                LayoutCalculator layoutCalculator = new GephiLayoutCalculator(inputFileName, outputFileName)
+                println settings
+                LayoutCalculator layoutCalculator = new GephiLayoutCalculator(
+                        inputFileName,
+                        outputFileName,
+                        settings.allowAutoMode as Boolean,
+                        settings.stepDisplacement as Float,
+                        settings.optimalDistance as Float,
+                        settings.iterations as Integer,
+                        settings.saveSvg as Boolean
+                )
                 return layoutCalculator.calculate()
             }
         })
