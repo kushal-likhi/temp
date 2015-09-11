@@ -9,6 +9,8 @@ out/production
 #work files
 workspace/*.json
 workspace/*.el
+workspace/*.net
+workspace/*.svg
 
 #npm
 node_modules
