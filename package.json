@@ -13,6 +13,9 @@
   "author": "Kushal Likhi",
   "license": "ISC",
   "dependencies": {
-    "request": "^2.61.0"
+    "async": "^1.4.2",
+    "freeport": "^1.0.5",
+    "request": "^2.61.0",
+    "simplequeue": "0.0.4"
   }
 }

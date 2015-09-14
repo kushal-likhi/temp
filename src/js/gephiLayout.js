@@ -8,12 +8,17 @@
 var path = require('path'),
     fs = require('fs'),
     spawn = require('child_process').spawn,
-    request = require('request');
+    request = require('request'),
+    sq = require('simplequeue'),
+    queue = sq.createQueue(),
+    async = require('async'),
+    freeport = require('freeport');
 
 /**
  * Constant PORT at which the layout server listens
  * */
-const PORT = 9263;
+var PORTA = 0;
+var PORTB = 0;
 
 /**
  * Constant JAR FILE path for the target jar file
@@ -25,12 +30,37 @@ const JAR_FILE = path.join(__dirname, '../../out/artifacts/node_gephi_lgl_jar', 
  * Callback is called when ready
  * */
 exports.init = function (callback) {
-    spawn('sh', ['kill.sh'], {
-        env: process.env,
-        cwd: __dirname
-    }).on('close', function () {
-        console.log('Killed prev');
-        var serverProcess = spawn('java', ['-jar', JAR_FILE, PORT], {
+    var tasks = [];
+
+    //Kill old
+    tasks.push(function (callback) {
+        spawn('sh', ['kill.sh'], {env: process.env, cwd: __dirname})
+            .on('close', function () {
+                callback();
+            })
+            .on('error', function (err) {
+                callback(err)
+            });
+    });
+
+    //Get ports
+    tasks.push(function (callback) {
+        freeport(function (err, port) {
+            if (err) return callback(err);
+            callback(null, PORTA = port);
+        })
+    });
+
+    tasks.push(function (callback) {
+        freeport(function (err, port) {
+            if (err) return callback(err);
+            callback(null, PORTB = port);
+        })
+    });
+
+    //Start port A
+    tasks.push(function (callback) {
+        var serverProcess = spawn('java', ['-jar', JAR_FILE, PORTA], {
             env: process.env,
             cwd: path.join(__dirname, '../../')
         });
@@ -40,7 +70,7 @@ exports.init = function (callback) {
 
         serverProcess.stdout.on('data', function (data) {
             console.log('stdout: ' + data);
-            if (data.toString().search(new RegExp('port ' + PORT)) != -1 && !loaded) {
+            if (data.toString().search(new RegExp('port ' + PORTA)) != -1 && !loaded) {
                 loaded = true;
                 callback();
             }
@@ -69,9 +99,86 @@ exports.init = function (callback) {
         serverProcess.on('exit', function (err) {
             console.log('EXIT:', err);
         });
-    }).on('error', function (err) {
-        console.log(err);
     });
+
+    //Start port B
+    tasks.push(function (callback) {
+        var serverProcess = spawn('java', ['-jar', JAR_FILE, PORTB], {
+            env: process.env,
+            cwd: path.join(__dirname, '../../')
+        });
+
+        var hasExited = false,
+            loaded = false;
+
+        serverProcess.stdout.on('data', function (data) {
+            console.log('stdout: ' + data);
+            if (data.toString().search(new RegExp('port ' + PORTB)) != -1 && !loaded) {
+                loaded = true;
+                callback();
+            }
+        });
+
+        serverProcess.stderr.on('data', function (data) {
+            console.log('stderr: ' + data);
+            if (!hasExited) {
+                hasExited = true;
+                callback(data);
+            }
+        });
+
+        serverProcess.on('close', function (code) {
+            console.log('child process exited with code ' + code);
+            if (!hasExited) {
+                hasExited = true;
+                callback(null, code, true);
+            }
+        });
+
+        serverProcess.on('error', function (err) {
+            console.log('ERROR', err);
+        });
+
+        serverProcess.on('exit', function (err) {
+            console.log('EXIT:', err);
+        });
+    });
+
+    //Bind queue for Port A
+    tasks.push(function (callback) {
+        function read() {
+            queue.getMessage(function (err, message) {
+                if (err) {
+                    console.log(err);
+                    return setTimeout(read, 100);
+                }
+                LayoutCalculator._processMessage(message, PORTA, function () {
+                    setTimeout(read, 100);
+                });
+            });
+        }
+
+        callback(null, read());
+    });
+
+    //Bind queue for Port B
+    tasks.push(function (callback) {
+        function read() {
+            queue.getMessage(function (err, message) {
+                if (err) {
+                    console.log(err);
+                    return setTimeout(read, 100);
+                }
+                LayoutCalculator._processMessage(message, PORTB, function () {
+                    setTimeout(read, 100);
+                });
+            });
+        }
+
+        callback(null, read());
+    });
+
+    async.series(tasks, callback);
 };
 
 /**
@@ -162,12 +269,27 @@ LayoutCalculator.prototype._prepareInFile = function (callback) {
  * Runs the calculate command
  * */
 LayoutCalculator.prototype._runCommand = function (callback) {
-    request.post('http://localhost:' + PORT + '/calculate', {
-        json: this.settings
+    //Push message
+    queue.putMessage({cb: callback, settings: this.settings});
+};
+
+LayoutCalculator._processMessage = function (message, port, callback) {
+    console.log(message, port);
+    request.post('http://localhost:' + port + '/calculate', {
+        json: message.settings
     }, function (e, r, b) {
-        if (e) callback(e);
-        else if (r.statusCode == 200) callback(null, b);
-        else callback(new Error(b));
+        if (e) {
+            message.cb(e);
+            callback();
+        }
+        else if (r.statusCode == 200) {
+            message.cb(null, b);
+            callback();
+        }
+        else {
+            message.cb(new Error(b));
+            callback();
+        }
     });
 };
 
@@ -186,6 +308,7 @@ LayoutCalculator.prototype._mergeOutput = function (callback) {
         });
         callback();
     } catch (c) {
+        console.log(c);
         callback(c);
     }
 };
@@ -228,13 +351,13 @@ exports.selfTest = function (callback) {
             {source: 7, target: 0},
             {source: 8, target: 0}
         ]
-    });
+    }, {saveSvg: true});
     calculator.calculateLayout(function (err, data) {
         if (err) return callback(err, false);
         if (
             data &&
-            data.nodes && data.nodes.length == 4 &&
-            data.links && data.links.length == 4 &&
+            data.nodes && data.nodes.length == 11 &&
+            data.links && data.links.length == 15 &&
             typeof data.nodes[0].x == 'number' && typeof data.nodes[0].y == 'number'
         ) return callback(null, true);
         else return callback(new Error('Not able to populate the layouts'), false);

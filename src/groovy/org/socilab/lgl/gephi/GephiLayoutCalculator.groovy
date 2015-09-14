@@ -118,7 +118,7 @@ class GephiLayoutCalculator implements LayoutCalculator {
         List positions = []
         for (Node node : graph.getNodes()) {
             positions.push([
-                    ref: node.getId(),
+                    ref: node.getId() - 1,
                     x  : node.getNodeData().x(),
                     y  : node.getNodeData().y()
             ])
