@@ -7,10 +7,9 @@ lib.init(function (err) {
         console.log(err, passed);
     });
 
-    return; //Disabled
     var ts = +new Date();
 
-    var lc = new lib.LayoutCalculator(require('./samples/generated.json'));
+    var lc = new lib.LayoutCalculator(require('./samples/generated.json'), {saveSvg: true});
 
     lc.calculateLayout(function (err, data) {
         console.log(err);
