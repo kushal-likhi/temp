@@ -72,6 +72,8 @@ class GephiLayoutCalculator implements LayoutCalculator {
     private initializeGephiProject() {
         //Init a project - and therefore a workspace
         pc = Lookup.getDefault().lookup(ProjectController.class);
+        pc.closeCurrentProject()
+        pc.closeCurrentWorkspace()
         pc.newProject();
         workspace = pc.getCurrentWorkspace();
         //Get controllers and models
@@ -118,7 +120,7 @@ class GephiLayoutCalculator implements LayoutCalculator {
         List positions = []
         for (Node node : graph.getNodes()) {
             positions.push([
-                    ref: node.getId() - 1,
+                    ref: Integer.parseInt(node.getNodeData().getId()) - 1,
                     x  : node.getNodeData().x(),
                     y  : node.getNodeData().y()
             ])
